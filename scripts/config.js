@@ -560,7 +560,7 @@ export function initConfig() {
             }
 
             async _getButtons() {
-                const buttons = [new DND5eItemButton({ item: null, isWeaponSet: true, isPrimary: false })];
+                const buttons = [new DND5eItemButton({ item: null, isWeaponSet: false, isPrimary: false })];
                 for (const [type, types] of Object.entries(itemTypes)) {
                     const items = this.actor.items.filter((item) => types.includes(item.type) && actionTypes.stamina.includes(item.system.activation?.type) && !CoreHUD.DND5E.mainBarFeatures.includes(item.system.type?.value));
                     if (!items.length) continue;
@@ -598,7 +598,7 @@ export function initConfig() {
             }
 
             async _getButtons() {
-                const buttons = [new DND5eItemButton({ item: null, isWeaponSet: true, isPrimary: false })];
+                const buttons = [new DND5eItemButton({ item: null, isWeaponSet: false, isPrimary: false })];
                 for (const [type, types] of Object.entries(itemTypes)) {
                     const items = this.actor.items.filter((item) => types.includes(item.type) && actionTypes.support.includes(item.system.activation?.type) && !CoreHUD.DND5E.mainBarFeatures.includes(item.system.type?.value));
                     if (!items.length) continue;
