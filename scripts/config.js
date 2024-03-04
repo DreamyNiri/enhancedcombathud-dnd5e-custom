@@ -23,7 +23,7 @@ export function initConfig() {
             reaction: ["reaction", "reactiondamage", "reactionmanual"],
             free: ["special"],
             support: ["support"],
-            stamina: ["stamina"},
+            stamina: ["stamina"],
         };
 
         const itemTypes = {
@@ -531,6 +531,82 @@ export function initConfig() {
                 }
 
                 const barItems = this.actor.items.filter((item) => CoreHUD.DND5E.mainBarFeatures.includes(item.system.type?.value) && actionTypes.bonus.includes(item.system.activation?.type));
+                buttons.push(...condenseItemButtons(barItems));
+
+                return buttons;
+            }
+        }
+
+        class DND5eStaminaActionPanel extends ARGON.MAIN.ActionPanel {
+            constructor(...args) {
+                super(...args);
+            }
+
+            get label() {
+                return "Stamina Action";
+            }
+
+            get maxActions() {
+                return this.actor?.inCombat ? 1 : null;
+            }
+
+            get currentActions() {
+                return this.isActionUsed ? 0 : 1;
+            }
+
+            _onNewRound(combat) {
+                this.isActionUsed = false;
+                this.updateActionUse();
+            }
+
+            async _getButtons() {
+                const buttons = [new DND5eItemButton({ item: null, isWeaponSet: true, isPrimary: false })];
+                for (const [type, types] of Object.entries(itemTypes)) {
+                    const items = this.actor.items.filter((item) => types.includes(item.type) && actionTypes.stamina.includes(item.system.activation?.type) && !CoreHUD.DND5E.mainBarFeatures.includes(item.system.type?.value));
+                    if (!items.length) continue;
+                    const button = new DND5eButtonPanelButton({ type, items, color: 0 });
+                    if (button.hasContents) buttons.push(button);
+                }
+
+                const barItems = this.actor.items.filter((item) => CoreHUD.DND5E.mainBarFeatures.includes(item.system.type?.value) && actionTypes.stamina.includes(item.system.activation?.type));
+                buttons.push(...condenseItemButtons(barItems));
+
+                return buttons;
+            }
+        }
+
+        class DND5eSupportActionPanel extends ARGON.MAIN.ActionPanel {
+            constructor(...args) {
+                super(...args);
+            }
+
+            get label() {
+                return "Support Action";
+            }
+
+            get maxActions() {
+                return this.actor?.inCombat ? 1 : null;
+            }
+
+            get currentActions() {
+                return this.isActionUsed ? 0 : 1;
+            }
+
+            _onNewRound(combat) {
+                this.isActionUsed = false;
+                this.updateActionUse();
+            }
+
+            async _getButtons() {
+                const buttons = [new DND5eItemButton({ item: null, isWeaponSet: true, isPrimary: false })];
+                for (const [type, types] of Object.entries(itemTypes)) {
+                    const items = this.actor.items.filter((item) => types.includes(item.type) && actionTypes.support.includes(item.system.activation?.type) && !CoreHUD.DND5E.mainBarFeatures.includes(item.system.type?.value));
+                    if (!items.length) continue;
+                    const button = new DND5eButtonPanelButton({ type, items, color: 1 });
+                    if (button.hasContents) buttons.push(button);
+                }
+
+                const barItems = this.actor.items.filter((item) => CoreHUD.DND5E.mainBarFeatures.includes(item.system.type?.value) && actionTypes.support.includes(item.system.activation?.type));
                 buttons.push(...condenseItemButtons(barItems));
 
                 return buttons;
@@ -1088,7 +1164,7 @@ export function initConfig() {
 
         const enableMacroPanel = game.settings.get(MODULE_ID, "macroPanel");
 
-        const mainPanels = [DND5eActionActionPanel, DND5eBonusActionPanel, DND5eReactionActionPanel, DND5eFreeActionPanel, DND5eLegActionPanel, DND5eLairActionPanel, DND5eMythicActionPanel]
+        const mainPanels = [DND5eActionActionPanel, DND5eBonusActionPanel, DND5eStaminaActionPanel, DND5eSupportActionPanel, DND5eReactionActionPanel, DND5eFreeActionPanel, DND5eLegActionPanel, DND5eLairActionPanel, DND5eMythicActionPanel]
         if(enableMacroPanel) mainPanels.push(ARGON.PREFAB.MacroPanel);
         mainPanels.push(ARGON.PREFAB.PassTurnPanel);
 
