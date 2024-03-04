@@ -22,6 +22,8 @@ export function initConfig() {
             bonus: ["bonus"],
             reaction: ["reaction", "reactiondamage", "reactionmanual"],
             free: ["special"],
+            support: ["support"],
+            stamina: ["stamina"},
         };
 
         const itemTypes = {
